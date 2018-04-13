@@ -1,7 +1,13 @@
 import awsgi
 from flask import Flask
-from .resources import events
 
+try:
+    from resources import events
+except:
+    import os, sys
+    base = os.path.dirname(os.path.realpath(__file__))
+    sys.path.append(base)
+    from resources import events
 
 app = Flask(__name__)
 app.register_blueprint(events.events)
