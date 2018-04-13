@@ -1,8 +1,10 @@
 import awsgi
 from flask import Flask
+from .resources import events
+
 
 app = Flask(__name__)
-#app.register_blueprint(product.product)
+app.register_blueprint(events.events)
 
 @app.route("/")
 def index():
