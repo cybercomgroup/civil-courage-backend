@@ -2,7 +2,7 @@ import awsgi
 from flask import Flask
 
 try:
-    from resources import events
+    from resources import events, data
 except:
     import os, sys
     base = os.path.dirname(os.path.realpath(__file__))
@@ -11,6 +11,7 @@ except:
 
 app = Flask(__name__)
 app.register_blueprint(events.events)
+app.register_blueprint(data.data)
 
 @app.route("/")
 def index():
