@@ -1,4 +1,5 @@
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 from decimal import *
 import simplejson as json
 from flask import Blueprint, request
@@ -28,6 +29,13 @@ def list():
         items = table.scan().get("Items", [])
     
     return (json.dumps(items), "200")
+
+@events.route("/events/<id>")
+def get(id):
+    dynamodb_resource = boto3.resource("dynamodb")
+    table = dynamodb_resource.Table(variables.events_table_name)
+    item = table.get_item(Key={"id": Decimal(id)})["Item"]
+    return (json.dumps(item), 200) 
 
 @events.route("/events/import", methods=["POST"])
 def import_events():

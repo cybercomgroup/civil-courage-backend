@@ -40,6 +40,20 @@ def test_list_events_limit(event_template, dynamodb_service, events, limit, expe
     items = json.loads(result["body"])
     assert len(items) == expected
 
+def test_get_event(event_template, dynamodb_service, events):
+    (dynamodb_resource, dynamodb_client) = dynamodb_service
+    
+    table = dynamodb_resource.Table(variables.events_table_name)
+    table.put_item(Item=events[0])
+ 
+    event_template["path"] = "/events/{}".format(events[0]["id"])
+    event_template["httpMethod"] = "GET"
+    result = main.lambda_handler(event_template, None)
+    assert result["statusCode"] == "200"
+
+    item = json.loads(result["body"])
+    assert item == events[0]
+
 def test_events_import(event_template, dynamodb_service):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
      
