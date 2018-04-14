@@ -53,7 +53,10 @@ def latest():
     items = table.scan()["Items"]
     result = []
     for item in items:
-        lat2, lon2 = (float(item["latitude"]), float(item["longitude"]))
+        event_table = dynamodb_resource.Table(variables.events_table_name)
+        event = event_table.get_item(Key={"id": item["event_id"]})["Item"]
+
+        lat2, lon2 = (float(event["latitude"]), float(event["longitude"]))
         earth_radius = 6371 # km
 
         dlat = math.radians(lat2-lat1)

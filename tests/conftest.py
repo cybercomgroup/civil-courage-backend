@@ -1,3 +1,4 @@
+from decimal import *
 import pytest
 import boto3
 from moto import mock_dynamodb2
@@ -15,6 +16,14 @@ def event_template():
             "X_FORWARDED_PROTO": "http"
         }
     }
+
+@pytest.fixture
+def events():
+    return [{"date": "2018-04-09 13:00:01 +02:00", "place": "H\u00e4ssleholm", "latitude": Decimal("56.158915"), "id": 1, "longitude": Decimal("13.766765"), "name": "R\u00e5n i H\u00e4ssleholm", "type": "R\u00e5n"}, {"date": "2018-04-10 9:54:52 +02:00", "place": "Lycksele", "latitude": Decimal("64.59581"), "id": 4, "longitude": Decimal("18.676367"), "name": "Trafikbrott i Lycksele", "type": "Trafikbrott"}]
+ 
+@pytest.fixture
+def scenarios():
+    return [{"id": "1-20", "event_id": 1, "append_text": "test test", "severity": 2, "type": 0}, {"id": "4-20", "event_id": 4, "type": 1, "severity": 2, "append_text": "hello world"}]
 
 @pytest.fixture
 def dynamodb_service():

@@ -3,10 +3,6 @@ import simplejson as json
 from decimal import *
 from civil_courage_backend import main, variables
 
-@pytest.fixture
-def scenarios():
-    return [{"id": 1, "event_id": 2, "longitude": Decimal("11.964419"), "latitude": Decimal("57.707824"), "type": "CPR", "severity": 2, "text": "test test test"}, {"id": 3, "event_id": 4, "longitude": Decimal("12.01"), "latitude": Decimal("13.02"), "type": "CPR", "severity": 2, "text": "test test test"}]
-
 def test_scenario_crud_methods(event_template, dynamodb_service, scenarios):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
     
@@ -42,14 +38,19 @@ def test_list_scenarios_limit(event_template, dynamodb_service, scenarios, limit
     items = json.loads(result["body"])
     assert len(items) == expected
 
-@pytest.mark.parametrize("coordinates, expected", [((57.707984, 11.963561), 1), ((12.0, 15.0), 0)])
-def test_latest_scenario(event_template, dynamodb_service, scenarios, coordinates, expected):
+@pytest.mark.parametrize("coordinates, expected", [((56.158915, 13.766765), 1), ((57.0, 12.0), 0)])
+def test_latest_scenario(event_template, dynamodb_service, scenarios, events, coordinates, expected):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
     
     table = dynamodb_resource.Table(variables.scenarios_table_name)
     with table.batch_writer() as batch:
         for scenario in scenarios:
             batch.put_item(Item=scenario)
+    
+    table = dynamodb_resource.Table(variables.events_table_name)
+    with table.batch_writer() as batch:
+        for event in events:
+            batch.put_item(Item=event)
     
     event_template["path"] = "/scenarios/latest"
     event_template["httpMethod"] = "GET"

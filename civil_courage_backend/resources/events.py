@@ -34,7 +34,7 @@ def list():
 def get(id):
     dynamodb_resource = boto3.resource("dynamodb")
     table = dynamodb_resource.Table(variables.events_table_name)
-    item = table.get_item(Key={"id": Decimal(id)})["Item"]
+    item = table.get_item(Key={"id": int(id)})["Item"]
     return (json.dumps(item), 200) 
 
 @events.route("/events/import", methods=["POST"])
@@ -53,8 +53,8 @@ def import_events():
             gps = elem['location']
             gps = gps['gps']
             gpslist = gps.split(",")
-            event['longitude'] = Decimal(gpslist[0])
-            event['latitude'] = Decimal(gpslist[1])
+            event['longitude'] = Decimal(gpslist[1])
+            event['latitude'] = Decimal(gpslist[0])
             event['id'] = elem['id']
             name = elem['name']
             nameparts = name.split(",")
