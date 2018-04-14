@@ -2,15 +2,16 @@ import awsgi
 from flask import Flask
 
 try:
-    from resources import events, data
+    from resources import events, scenarios, data
 except:
     import os, sys
     base = os.path.dirname(os.path.realpath(__file__))
     sys.path.append(base)
-    from resources import events
+    from resources import events, scenarios, data
 
 app = Flask(__name__)
 app.register_blueprint(events.events)
+app.register_blueprint(scenarios.scenarios)
 app.register_blueprint(data.data)
 
 @app.route("/")
