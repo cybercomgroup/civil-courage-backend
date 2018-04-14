@@ -7,6 +7,17 @@ from civil_courage_backend import variables
 
 scenarios = Blueprint("scenarios", __name__)
 
+"""
+<REQUEST>
+      <LOGIN authenticationkey="openapiconsolekey" />
+      <QUERY objecttype="Camera">
+            <FILTER>
+                  <WITHIN name="Geometry.WGS84" shape="center" value="11.922334516579252 57.710578050586385" radius="10000m" />
+            </FILTER>
+      </QUERY>
+</REQUEST>
+"""
+
 @scenarios.route("/scenarios", methods=["POST"])
 def create():
     body = json.loads(request.data, use_decimal=True)
