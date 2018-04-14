@@ -14,13 +14,15 @@ def create():
 
 @scenarios.route("/scenarios", methods=["GET"])
 def list():
+    limit = request.args.get("limit", default=None, type=int)
+    
     dynamodb_resource = boto3.resource("dynamodb")
     table = dynamodb_resource.Table(variables.scenarios_table_name)
-    
-    try:
-        items = table.scan()["Items"]
-    except KeyError:
-        items = []
+
+    if limit:
+        items = table.scan(Limit=limit).get("Items", [])
+    else:
+        items = table.scan().get("Items", [])
 
     return (json.dumps(items), 200)
 

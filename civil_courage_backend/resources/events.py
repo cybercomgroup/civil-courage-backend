@@ -14,7 +14,14 @@ def create():
 
 @events.route("/events", methods=["GET"])
 def list():
+    limit = request.args.get("limit", default=None, type=int)
+    
     dynamodb_resource = boto3.resource("dynamodb")
     table = dynamodb_resource.Table(variables.events_table_name)
-    events = table.scan()["Items"]
-    return (json.dumps(events), "200")
+    
+    if limit:
+        items = table.scan(Limit=limit).get("Items", [])
+    else:
+        items = table.scan().get("Items", [])
+    
+    return (json.dumps(items), "200")

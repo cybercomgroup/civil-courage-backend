@@ -1,10 +1,10 @@
 import pytest
 import simplejson as json
-from civil_courage_backend import main
+from civil_courage_backend import main, variables
 
 @pytest.fixture
 def scenarios():
-    return [{"id": 1, "hello": "world"}]
+    return [{"id": 1, "hello": "world"}, {"id": 2, "hello": "test"}]
 
 def test_scenario_crud_methods(event_template, dynamodb_service, scenarios):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
@@ -22,5 +22,21 @@ def test_scenario_crud_methods(event_template, dynamodb_service, scenarios):
     assert len(items) == 1
     assert items[0] == scenarios[0]
 
+@pytest.mark.parametrize("limit, expected", [(1, 1), (None, 2)])
+def test_list_scenarios_limit(event_template, dynamodb_service, scenarios, limit, expected):
+    (dynamodb_resource, dynamodb_client) = dynamodb_service
+    
+    table = dynamodb_resource.Table(variables.scenarios_table_name)
+    with table.batch_writer() as batch:
+        for scenario in scenarios:
+            batch.put_item(Item=scenario)
+ 
+    event_template["path"] = "/scenarios"
+    event_template["httpMethod"] = "GET"
+    event_template["queryStringParameters"]["limit"] = limit
+    result = main.lambda_handler(event_template, None)
+    assert result["statusCode"] == "200"
 
+    items = json.loads(result["body"])
+    assert len(items) == expected
     
