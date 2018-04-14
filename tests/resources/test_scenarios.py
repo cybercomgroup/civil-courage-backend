@@ -21,6 +21,7 @@ def test_scenario_crud_methods(event_template, dynamodb_service, scenarios):
     assert result["statusCode"] == "200"
     items = json.loads(result["body"], use_decimal=True)
     assert len(items) == 1
+    scenarios[0]["id"] = items[0]["id"]
     assert items[0] == scenarios[0]
 
 @pytest.mark.parametrize("limit, expected", [(1, 1), (None, 2)])

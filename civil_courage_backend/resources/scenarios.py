@@ -1,3 +1,4 @@
+from random import randint
 import boto3
 import simplejson as json
 from flask import Blueprint, request
@@ -8,6 +9,7 @@ scenarios = Blueprint("scenarios", __name__)
 @scenarios.route("/scenarios", methods=["POST"])
 def create():
     body = json.loads(request.data, use_decimal=True)
+    body["id"] = "{}-{}".format(body["event_id"], randint(10, 99))
     scenarios_table = boto3.resource("dynamodb").Table(variables.scenarios_table_name)
     scenarios_table.put_item(Item=body)
     return ("", 200)
@@ -25,4 +27,6 @@ def list():
         items = table.scan().get("Items", [])
 
     return (json.dumps(items), 200)
+
+
 
