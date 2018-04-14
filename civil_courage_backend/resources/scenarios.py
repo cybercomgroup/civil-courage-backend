@@ -56,7 +56,7 @@ def latest():
         event_table = dynamodb_resource.Table(variables.events_table_name)
 
         try:
-            event = event_table.get_item(Key={"id": item["event_id"]})["Item"]
+            event = event_table.get_item(Key={"id": int(item["event_id"])})["Item"]
         except KeyError:
             continue
 
