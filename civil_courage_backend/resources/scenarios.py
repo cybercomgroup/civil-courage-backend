@@ -44,7 +44,7 @@ def list():
 def latest():
     lon1 = request.args.get("lon", type=float)
     lat1 = request.args.get("lat", type=float)
-    radius = request.args.get("radius", default=20, type=float)
+    radius = request.args.get("radius", default=5, type=float)
     
     dynamodb_resource = boto3.resource("dynamodb")
     table = dynamodb_resource.Table(variables.scenarios_table_name)
@@ -54,7 +54,11 @@ def latest():
     result = []
     for item in items:
         event_table = dynamodb_resource.Table(variables.events_table_name)
-        event = event_table.get_item(Key={"id": item["event_id"]})["Item"]
+
+        try:
+            event = event_table.get_item(Key={"id": item["event_id"]})["Item"]
+        except KeyError:
+            continue
 
         lat2, lon2 = (float(event["latitude"]), float(event["longitude"]))
         earth_radius = 6371 # km
