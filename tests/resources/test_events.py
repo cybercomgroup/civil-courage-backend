@@ -3,10 +3,6 @@ from decimal import *
 import simplejson as json
 from civil_courage_backend import main, variables
 
-@pytest.fixture
-def events():
-    return [{"date": "2018-04-09 13:00:01 +02:00", "place": "H\u00e4ssleholm", "longitude": Decimal("56.158915"), "id": 37376, "latitude": Decimal("13.766765"), "name": "R\u00e5n i H\u00e4ssleholm", "type": "R\u00e5n"}, {"date": "2018-04-10 9:54:52 +02:00", "place": "Lycksele", "longitude": Decimal("64.59581"), "id": 37440, "latitude": Decimal("18.676367"), "name": "Trafikbrott i Lycksele", "type": "Trafikbrott"}]
- 
 def test_events_crud(event_template, dynamodb_service, events):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
     

@@ -38,7 +38,7 @@ def test_list_scenarios_limit(event_template, dynamodb_service, scenarios, limit
     items = json.loads(result["body"])
     assert len(items) == expected
 
-@pytest.mark.parametrize("coordinates, expected", [((56.158915, 13.766765), 1), ((57.0, 12.0), 0)])
+@pytest.mark.parametrize("coordinates, expected", [((59.3414116, 18.0638673), 0)])
 def test_latest_scenario(event_template, dynamodb_service, scenarios, events, coordinates, expected):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
     

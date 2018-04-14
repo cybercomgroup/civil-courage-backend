@@ -25,6 +25,7 @@ def list():
     
     if limit:
         items = table.scan(Limit=limit).get("Items", [])
+        items.sort(key=lambda x:x["date"], reverse=True) 
     else:
         items = table.scan().get("Items", [])
     

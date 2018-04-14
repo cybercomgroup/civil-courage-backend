@@ -61,14 +61,14 @@ def latest():
             continue
 
         lat2, lon2 = (float(event["latitude"]), float(event["longitude"]))
-        earth_radius = 6371 # km
+        earth_radius = 6371 * 1000 # km
 
         dlat = math.radians(lat2-lat1)
         dlon = math.radians(lon2-lon1)
         a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
         d = int(earth_radius * c)
- 
+       
         if d <= radius:
             result.append(item)	
     

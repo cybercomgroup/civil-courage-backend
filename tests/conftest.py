@@ -19,7 +19,7 @@ def event_template():
 
 @pytest.fixture
 def events():
-    return [{"date": "2018-04-09 13:00:01 +02:00", "place": "H\u00e4ssleholm", "latitude": Decimal("56.158915"), "id": 1, "longitude": Decimal("13.766765"), "name": "R\u00e5n i H\u00e4ssleholm", "type": "R\u00e5n"}, {"date": "2018-04-10 9:54:52 +02:00", "place": "Lycksele", "latitude": Decimal("64.59581"), "id": 4, "longitude": Decimal("18.676367"), "name": "Trafikbrott i Lycksele", "type": "Trafikbrott"}]
+    return [{"date": "2018-04-09 13:00:01 +02:00", "place": "H\u00e4ssleholm", "latitude": Decimal("59.341267"), "id": 1, "longitude": Decimal("18.063502"), "name": "R\u00e5n i H\u00e4ssleholm", "type": "R\u00e5n"}, {"date": "2018-04-10 9:54:52 +02:00", "place": "Lycksele", "latitude": Decimal("64.59581"), "id": 4, "longitude": Decimal("18.676367"), "name": "Trafikbrott i Lycksele", "type": "Trafikbrott"}]
  
 @pytest.fixture
 def scenarios():
