@@ -1,7 +1,10 @@
 import boto3
+from decimal import *
 import simplejson as json
 from flask import Blueprint, request
+import urllib.request
 from civil_courage_backend import variables
+
 
 events = Blueprint("events", __name__)
 
@@ -25,3 +28,38 @@ def list():
         items = table.scan().get("Items", [])
     
     return (json.dumps(items), "200")
+
+@events.route("/events/import", methods=["POST"])
+def import_events():
+    police_url = "https://polisen.se/H4S-2018-handelser.json"
+    ListOfEvents = []
+
+    with urllib.request.urlopen(police_url) as url:
+        data = json.loads(url.read().decode('utf-8-sig'))
+        for elem in data:
+            event = {};
+            # create event from elem
+            event['id'] = elem['id']
+            event['date'] = elem['datetime']
+            event['type'] = elem['type']
+            gps = elem['location']
+            gps = gps['gps']
+            gpslist = gps.split(",")
+            event['longitude'] = Decimal(gpslist[0])
+            event['latitude'] = Decimal(gpslist[1])
+            event['id'] = elem['id']
+            name = elem['name']
+            nameparts = name.split(",")
+            place = nameparts[len(nameparts) - 1]
+            place = place[1:]
+            event['place'] = place
+            event['name'] = elem['type'] + " i " + place
+            ListOfEvents.append(event)
+ 
+    dynamodb_resource = boto3.resource("dynamodb")
+    table = dynamodb_resource.Table(variables.events_table_name)
+    with table.batch_writer() as batch:
+        for event in ListOfEvents:
+            batch.put_item(Item=event)
+
+    return ("", 200)
