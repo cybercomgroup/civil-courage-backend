@@ -7,7 +7,7 @@ events = Blueprint("events", __name__)
 
 @events.route("/events", methods=["POST"])
 def create():
-    body = request.get_json(force=True)
+    body = json.loads(request.data, use_decimal=True)
     scenarios_table = boto3.resource("dynamodb").Table(variables.events_table_name)
     scenarios_table.put_item(Item=body)
     return ("", 200)

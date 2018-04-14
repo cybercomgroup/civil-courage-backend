@@ -1,10 +1,11 @@
 import pytest
 import simplejson as json
+from decimal import *
 from civil_courage_backend import main, variables
 
 @pytest.fixture
 def scenarios():
-    return [{"id": 1, "hello": "world"}, {"id": 2, "hello": "test"}]
+    return [{"id": 1, "event_id": 2, "longitude": Decimal("12.01"), "latitude": Decimal("13.02"), "type": "CPR", "severity": 2, "text": "test test test"}, {"id": 3, "event_id": 4, "longitude": Decimal("12.01"), "latitude": Decimal("13.02"), "type": "CPR", "severity": 2, "text": "test test test"}]
 
 def test_scenario_crud_methods(event_template, dynamodb_service, scenarios):
     (dynamodb_resource, dynamodb_client) = dynamodb_service
@@ -18,7 +19,7 @@ def test_scenario_crud_methods(event_template, dynamodb_service, scenarios):
     event_template["httpMethod"] = "GET"
     result = main.lambda_handler(event_template, None)
     assert result["statusCode"] == "200"
-    items = json.loads(result["body"])
+    items = json.loads(result["body"], use_decimal=True)
     assert len(items) == 1
     assert items[0] == scenarios[0]
 
