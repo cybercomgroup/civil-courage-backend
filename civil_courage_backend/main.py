@@ -10,6 +10,7 @@ except:
     from resources import events, scenarios, data
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 app.register_blueprint(events.events)
 app.register_blueprint(scenarios.scenarios)
 app.register_blueprint(data.data)
